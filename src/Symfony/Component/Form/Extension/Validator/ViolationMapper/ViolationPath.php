@@ -194,6 +194,14 @@ class ViolationPath implements \IteratorAggregate, PropertyPathInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isNullSafe(int $index)
+    {
+        return false;
+    }
+
+    /**
      * Returns whether an element maps directly to a form.
      *
      * Consider the following violation path:
