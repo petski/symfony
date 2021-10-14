@@ -93,7 +93,7 @@ class PropertyAccessorTest extends TestCase
     }
 
     /**
-     * @dataProvider getValidPropertyPaths
+     * @dataProvider getValidReadPropertyPaths
      */
     public function testGetValue($objectOrArray, $path, $value)
     {
@@ -281,7 +281,7 @@ class PropertyAccessorTest extends TestCase
     }
 
     /**
-     * @dataProvider getValidPropertyPaths
+     * @dataProvider getValidWritePropertyPaths
      */
     public function testSetValue($objectOrArray, $path)
     {
@@ -381,7 +381,7 @@ class PropertyAccessorTest extends TestCase
     }
 
     /**
-     * @dataProvider getValidPropertyPaths
+     * @dataProvider getValidReadPropertyPaths
      */
     public function testIsReadable($objectOrArray, $path)
     {
@@ -442,7 +442,7 @@ class PropertyAccessorTest extends TestCase
     }
 
     /**
-     * @dataProvider getValidPropertyPaths
+     * @dataProvider getValidWritePropertyPaths
      */
     public function testIsWritable($objectOrArray, $path)
     {
@@ -502,7 +502,7 @@ class PropertyAccessorTest extends TestCase
         $this->assertFalse($this->propertyAccessor->isWritable($objectOrArray, $path));
     }
 
-    public function getValidPropertyPaths()
+    public function getValidWritePropertyPaths()
     {
         return [
             [['Bernhard', 'Schussek'], '[0]', 'Bernhard'],
@@ -546,6 +546,20 @@ class PropertyAccessorTest extends TestCase
             [new TestClass(new TestClass(new TestClass('bar'))), 'publicGetter.publicGetter.publicGetSetter', 'bar'],
             [new TestClass(['foo' => ['baz' => new TestClass('bar')]]), 'publicGetter[foo][baz].publicGetSetter', 'bar'],
         ];
+    }
+
+    public function getValidReadPropertyPaths()
+    {
+        $testCases = $this->getValidWritePropertyPaths();
+
+        // Optional paths can only be read and can't be written to.
+        $testCases[] = [(object) ['foo' => (object) ['firstName' => 'Bernhard']], 'foo.bar?', null];
+        $testCases[] = [(object) ['foo' => (object) ['firstName' => 'Bernhard']], 'foo.bar?.baz?', null];
+        $testCases[] = [(object) ['foo' => (object) ['firstName' => 'Bernhard']], 'foo.bar?.baz', null];
+        $testCases[] = [['foo' => ['firstName' => 'Bernhard']], '[foo][bar?]', null];
+        $testCases[] = [['foo' => ['firstName' => 'Bernhard']], '[foo][bar?][baz?]', null];
+
+        return $testCases;
     }
 
     public function testTicket5755()

@@ -15,6 +15,8 @@ namespace Symfony\Component\PropertyAccess;
  * A sequence of property names or array indices.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @method bool isNullSafe(int $index) Returns whether the element at the given index is null sage. Not implementing it is deprecated since Symfony 5.2
  */
 interface PropertyPathInterface extends \Traversable
 {
